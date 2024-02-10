@@ -6,9 +6,11 @@ from mtcnn.mtcnn import MTCNN
 from numpy import * 
 import numpy as np
 import pandas as pd 
+from keras_facenet import FaceNet
 
+model = FaceNet()
 
-model = load_model('./facenet_keras.h5')      
+# model = load_model('./facenet_keras(2).h5')      
 
 
 def get_embedding(model, face_pixels):               
@@ -16,7 +18,8 @@ def get_embedding(model, face_pixels):
     mean, std = face_pixels.mean(), face_pixels.std()
     face_pixels = (face_pixels - mean) / std
     samples = expand_dims(face_pixels, axis=0)
-    yhat = model.predict(samples)
+    # yhat = model.predict(samples)
+    yhat = model.embeddings(samples)
     return yhat[0]
 
 
@@ -51,8 +54,8 @@ def register(input_url, patients):
     new_pat = get_embedding(model, new_face)
     patients.append(new_pat)
 
-originalface = extract_face('./samplefaces/shot1.jpg')
-testface     = extract_face('./samplefaces/shot2.jpeg')
+originalface = extract_face()
+testface = extract_face()
 
 originalembedding = get_embedding(model,originalface)    
 testembedding = get_embedding(model,testface)
